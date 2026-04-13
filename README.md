@@ -10,14 +10,14 @@ Not your usual bar or line graph 😄.
 2️⃣ Undirected Graphs - in this case, endges are unordered pairs {u, v}, meaning the connection between the vertices is bidirecional.
 
 ## Some important terminology in Graph structures.
-* Two vertices joined by an edge are called the <b>end vertices</b> or ⭐<u>endpoints</u> of the edge.
-* If an edge is directed, its first endpoint is called the ⭐<u>origin edge</u> and the other endpoint is called the ⭐<u>destination edge</u>.
-* Two vertices u and v are said to be ⭐<u>adjacent</u> if there exists an edge with endpoints u and v.
-* An edge is said to be ⭐<u>incident</u> to a vertex if the vertex is one of the edge's endpoints.
-* The ⭐<u>outgoing edges</u> of a vertex are the directed edges whose origin is that vertex.
-* The ⭐<u>incoming edges</u> of a vertex are the directed edges whose destination is that vertex.
-* ⭐<u>The degree</u> of a vertex v, denoted by <u>deg(v)</u>, is the number of incident edges of v.
-* The ⭐<u>in-degree</u> and ⭐<u>out degree</u> of a vertex v are the number of the incoming and outgoing edges of v, and are denoted by <u>indeg(v)</u> and <u>outged(v)</u>, respectively.
+* Two vertices joined by an edge are called the <b>end vertices</b> or ⭐<b>endpoints</b> of the edge.
+* If an edge is directed, its first endpoint is called the ⭐<b>origin edge</b> and the other endpoint is called the ⭐<b>destination edge</b>.
+* Two vertices $u$ and $v$ are said to be ⭐<b>adjacent</b> if there exists an edge with endpoints $u$ and $v$.
+* An edge is said to be ⭐<b>incident</b> to a vertex if the vertex is one of the edge's endpoints.
+* The ⭐<b>outgoing edges</b> of a vertex are the directed edges whose origin is that vertex.
+* The ⭐<b>incoming edges</b> of a vertex are the directed edges whose destination is that vertex.
+* ⭐<b>The degree</b> of a vertex $v$, denoted by <b>deg(v)</b>, is the number of incident edges of $v$.
+* The ⭐<b>in-degree</b> and ⭐<b>out degree</b> of a vertex $v$ are the number of the incoming and outgoing edges of $v$, and are denoted by <b>indeg(v)</b> and <b>outged(v)</b>, respectively.
 
 ## Core Operations of a Graph ADT
 * <code>adjacent(G, x, y)</code> - Tests whether there is an edge from vertex $x$ to vertex $y$.
@@ -143,4 +143,57 @@ Not your usual bar or line graph 😄.
   * We assume Vertex, Edge, and Graph interfaces.
   * We then define a concrete <code>AdjacencyMapGraph</code> class, with nested classes <code>InnerVertex</code> and <code>InnerEdge</code> to implement the vertex and edge abstractions.
   * these classes use generic parameters V and E to designate the element type stored respectively at vertices and edges.
+ 
+## Graph Traversals
+* Graph traversal is a systematic procedure for exploring a graph by examining all of its vertices and edges..
+* A traversal is efficient if it visits all the vertcies and edges in time proportional to their number.
+* Graph traversal algorithms are key in determining how to travel from one vertex to another while following paths of a graph.
+* Some problems that deal with reachability in an undirected graph $G$ include the following:
+  - Computing a path from vertex $u$ to vertex $v$, or reporting that no such path exists.
+  - Given a start vertex $s$ of $G$, computing , for every vertex $v$ of $G$, a path with the minimum number of edges between $s$ and $v$, or reporting that no such path exists.
+  - Testing whether $G$ is connected
+  - Computing a spanning tree of $G$, if $G$ is connected
+  - Computing the connected componets of $G$
+  - Identifying a cycle in $G$, or reporting that $G$ has no cycles
+ 
+* Some problems that deal with reachability in a directed graph $G$ include the following:
+  - Computing a directed path from vertex $u$ to vertex $v$, or reporting that no such path exists.
+  - Finding all the vertices of $G$ that are reachable from a given vertex $s$.
+  - Determine whether $G$ is acyclic.
+  - Determine  whether $G$ is strongly connected.
+ 
+  * The two efficient graph traversals are:
+    1. Depth-First search
+    2. Breath-First search
 
+### Depth-First Search
+* This algorithm is useful for testing a number of properties of graphs including whether there is a path from one vertex to another and whether or not a graph is connected.
+* DFS is analogous to wandering in a 'maze' with a string and a can of paint without getting lost.
+* We begin at a starting point vertex $s$ in $G$, which we initialize by fixing one end of our string to $s$ and painting $s$ as visited.
+* The vertex $s$ is now our current vertex.
+* In general, if we call our current vertex $u$, we traverse $G$ by considering an arbitrary edge $(u, v)$ incident to the current vertex $u$.
+* If the edge $(u, v)$ leads us to a vertex $v$ that is already visited, we ignore that edge.
+* If, on the other hand, $(u, v)$ leads to an unvisited vertex $v$, then we unroll out string, and go to $v$.
+* We then paint $v$ as visited, and make it the current vertex, repeating the computation.
+* Eventually, we will get to a vertex $v$ such that all the edges incident to $v$ lead to vertices already visited.
+* To get out of this impasse, we roll our string back up, backtracking along the edge that brought us to $v$, going back to a previously visited vertex $u$.
+* We then ,ake $u$ our current vertex and repeat the compuatation above for any edges incident to $u$ that we have not yet considered.
+* If all of $u$'s incident edges lead to vissited vertices, then we again roll up our string and backtrack to the vertex we came from to get to $u$, and repeat the procedure at that vertex.
+* Thus, we continue to backtrack along the path that we have traced so far until we find a vertex that has yet unexplored edges, take one such edge, and continue the traversa.
+* The process terminates when our backtracking leads us back to the start vertex $s$, and there are no more unexpected edges incident to $s$.
+
+#### Classifying Graph Edges with DFS
+* An execution of DFS can be used to analyze the structure of a graph, based upon the way in which edges are explored during the traversal.
+* The DFS process naturally identifies what is known as the <b>Depth-First Search Tree</b> rooted at a starting vertex $s$.
+* whenever an edge $e = (u, v)$ is used to discover a new vertex $v$ suring the DFS, that edge is know as a <b>discovery edge</b> or <b>tree edge</b>, as oriented from $u$ to $v$.
+* All other edges that are considered suring the execution of DFS are known as <b>nontree edges</b>, which take us to a previously visited vertex.
+* In the case of an undirected graph, we will find that all nontree edges that are explored connect the current vertex to one that is an ancestor of it in the DFS tree.
+* We will call such an edge a <b>back edge</b>.
+* When performing a DFS on a directed graph, there are three possible kinds of nontree edges:
+  - Back edges - Edges which connect a vertex to an ancestor in the DFS tree.
+  - Forward edges - Edges which connect a vertex to a descendant in the DFS tree.
+  - Cross edges - Edges which connect a vertex to a vertex that is neither its ancesto nor its descendant.
+ 
+#### Properties of a DFS
+* Let $G$ be an undirected graph on which a DFS traversal starting at a vertex $s$ has been performed.
+  * Then the traversal visits all vertices in the connected component of $s$, and the discovery edges form a spanning tree of the connected component of $s$.
